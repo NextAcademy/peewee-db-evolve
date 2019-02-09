@@ -19,7 +19,7 @@ setup(
   author='Derek Anderson',
   author_email='public@kered.org',
   url='https://github.com/keredson/peewee-db-evolve',
-  packages=['colorama','peewee'],
+  packages=setuptools.find_packages(),
   py_modules=['peeweedbevolve'],
   classifiers=[
     'Development Status :: 5 - Production/Stable',
