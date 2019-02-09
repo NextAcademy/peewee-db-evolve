@@ -43,121 +43,121 @@ except NameError:
 ###################
 
 # if PW3:
-#   def extract_query_from_migration(migration):
-#     if isinstance(migration, Iterable):
-#       # Postgrsql has context first, MySql has context last :(
-#       ctx = next(obj for obj in migration if isinstance(obj, pw.Context))
-#     else:
-#       ctx = migration
-#     return [ctx.query()]
+def extract_query_from_migration(migration):
+  if isinstance(migration, Iterable):
+    # Postgrsql has context first, MySql has context last :(
+    ctx = next(obj for obj in migration if isinstance(obj, pw.Context))
+  else:
+    ctx = migration
+  return [ctx.query()]
 
-#   def _table_name(model):
-#     return model._meta.table_name
+def _table_name(model):
+  return model._meta.table_name
 
-#   def _column_name(field):
-#     return field.column_name
+def _column_name(field):
+  return field.column_name
 
-#   def _field_type(field):
-#     return field.field_type
+def _field_type(field):
+  return field.field_type
 
-#   def _is_foreign_key(field):
-#     return hasattr(field, 'rel_model')
+def _is_foreign_key(field):
+  return hasattr(field, 'rel_model')
 
-#   def create_table(model):
-#     manager = pw.SchemaManager(model)
-#     ctx = manager._create_table()
-#     return [(''.join(ctx._sql), ctx._values)]
+def create_table(model):
+  manager = pw.SchemaManager(model)
+  ctx = manager._create_table()
+  return [(''.join(ctx._sql), ctx._values)]
 
-#   def rename_table(migrator, before, after):
-#     migration = migrator.rename_table(before, after, with_context=True)
-#     return extract_query_from_migration(migration)
+def rename_table(migrator, before, after):
+  migration = migrator.rename_table(before, after, with_context=True)
+  return extract_query_from_migration(migration)
 
-#   def drop_table(migrator, name):
-#     migration = migrator.make_context().literal('DROP TABLE ').sql(pw.Entity(name))
-#     return extract_query_from_migration(migration)
+def drop_table(migrator, name):
+  migration = migrator.make_context().literal('DROP TABLE ').sql(pw.Entity(name))
+  return extract_query_from_migration(migration)
 
-#   def create_index(model, fields, unique):
-#     manager = pw.SchemaManager(model)
-#     ctx = manager._create_index(pw.ModelIndex(model, fields, unique=unique))
-#     return [(''.join(ctx._sql), ctx._values)]
+def create_index(model, fields, unique):
+  manager = pw.SchemaManager(model)
+  ctx = manager._create_index(pw.ModelIndex(model, fields, unique=unique))
+  return [(''.join(ctx._sql), ctx._values)]
 
-#   def drop_index(migrator, model, index):
-#     migration = migrator.make_context().literal('DROP INDEX ').sql(pw.Entity(index.name))
-#     if is_mysql(model._meta.database):
-#       migration = migration.literal(' ON ').sql(pw.Entity(_table_name(model)))
-#     return extract_query_from_migration(migration)
+def drop_index(migrator, model, index):
+  migration = migrator.make_context().literal('DROP INDEX ').sql(pw.Entity(index.name))
+  if is_mysql(model._meta.database):
+    migration = migration.literal(' ON ').sql(pw.Entity(_table_name(model)))
+  return extract_query_from_migration(migration)
 
-#   def create_foreign_key(field):
-#     manager = pw.SchemaManager(field.model)
-#     ctx = manager._create_foreign_key(field)
-#     return [(''.join(ctx._sql), ctx._values)]
+def create_foreign_key(field):
+  manager = pw.SchemaManager(field.model)
+  ctx = manager._create_foreign_key(field)
+  return [(''.join(ctx._sql), ctx._values)]
 
-#   def drop_foreign_key(db, migrator, table_name, fk_name):
-#     drop_stmt = ' DROP FOREIGN KEY ' if is_mysql(db) else ' DROP CONSTRAINT '
-#     migration = migrator._alter_table(migrator.make_context(), table_name).literal(drop_stmt).sql(pw.Entity(fk_name))
-#     return extract_query_from_migration(migration)
+def drop_foreign_key(db, migrator, table_name, fk_name):
+  drop_stmt = ' DROP FOREIGN KEY ' if is_mysql(db) else ' DROP CONSTRAINT '
+  migration = migrator._alter_table(migrator.make_context(), table_name).literal(drop_stmt).sql(pw.Entity(fk_name))
+  return extract_query_from_migration(migration)
 
-#   def drop_default(db, migrator, table_name, column_name, field):
-#     migration = migrator._alter_column(ctx, table_name, column_name).literal('DROP DEFAULT')
-#     return extract_query_from_migration(migration)
+def drop_default(db, migrator, table_name, column_name, field):
+  migration = migrator._alter_column(ctx, table_name, column_name).literal('DROP DEFAULT')
+  return extract_query_from_migration(migration)
 
-#   def set_default(db, migrator, table_name, column_name, field):
-#     migration = migrator.apply_default(table_name, column_name, field, with_context=True)
-#     return extract_query_from_migration(migration)
+def set_default(db, migrator, table_name, column_name, field):
+  migration = migrator.apply_default(table_name, column_name, field, with_context=True)
+  return extract_query_from_migration(migration)
 
-#   def alter_add_column(db, migrator, ntn, column_name, field):
-#     migration = migrator.alter_add_column(ntn, column_name, field, with_context=True)
-#     to_run = extract_query_from_migration(migration)
-#     if is_mysql(db) and _is_foreign_key(field):
-#       to_run += create_foreign_key(field)
-#     return to_run
+def alter_add_column(db, migrator, ntn, column_name, field):
+  migration = migrator.alter_add_column(ntn, column_name, field, with_context=True)
+  to_run = extract_query_from_migration(migration)
+  if is_mysql(db) and _is_foreign_key(field):
+    to_run += create_foreign_key(field)
+  return to_run
 
-#   def drop_not_null(migrator, ntn, defined_col):
-#     migration = migrator.drop_not_null(ntn, defined_col.name, with_context=True)
-#     return extract_query_from_migration(migration)
+def drop_not_null(migrator, ntn, defined_col):
+  migration = migrator.drop_not_null(ntn, defined_col.name, with_context=True)
+  return extract_query_from_migration(migration)
 
-#   def rename_column(db, migrator, table, ocn, ncn, field):
-#     if is_mysql(db):
-#       ctx = migrator.make_context()
-#       migration = migrator._alter_table(ctx, table).literal(' CHANGE ').sql(pw.Entity(ocn)).literal(' ').sql(field.ddl(ctx))
-#     else:
-#       migration = migrator.rename_column(table, ocn, ncn, with_context=True)
-#     return extract_query_from_migration(migration)
+def rename_column(db, migrator, table, ocn, ncn, field):
+  if is_mysql(db):
+    ctx = migrator.make_context()
+    migration = migrator._alter_table(ctx, table).literal(' CHANGE ').sql(pw.Entity(ocn)).literal(' ').sql(field.ddl(ctx))
+  else:
+    migration = migrator.rename_column(table, ocn, ncn, with_context=True)
+  return extract_query_from_migration(migration)
 
-#   def drop_column(db, migrator, table, column_name):
-#     migrator.explicit_delete_foreign_key = False
-#     migration = migrator.drop_column(table, column_name, cascade=False, with_context=True)
-#     return extract_query_from_migration(migration)
+def drop_column(db, migrator, table, column_name):
+  migrator.explicit_delete_foreign_key = False
+  migration = migrator.drop_column(table, column_name, cascade=False, with_context=True)
+  return extract_query_from_migration(migration)
 
-#   def change_column_type(db, migrator, table_name, column_name, field):
-#     column_type = _field_type(field)
-#     ctx = migrator.make_context()
-#     if is_postgres(db):
-#       migration = migrator._alter_column(ctx, table_name, column_name).literal(' TYPE ').sql(field.ddl_datatype(ctx))
-#     elif is_mysql(db):
-#       migration = migrator._alter_table(ctx, table_name).literal(' MODIFY COLUMN ').sql(field.ddl(ctx))
-#     else:
-#       raise Exception('how do i change a column type for %s?' % db)
+def change_column_type(db, migrator, table_name, column_name, field):
+  column_type = _field_type(field)
+  ctx = migrator.make_context()
+  if is_postgres(db):
+    migration = migrator._alter_column(ctx, table_name, column_name).literal(' TYPE ').sql(field.ddl_datatype(ctx))
+  elif is_mysql(db):
+    migration = migrator._alter_table(ctx, table_name).literal(' MODIFY COLUMN ').sql(field.ddl(ctx))
+  else:
+    raise Exception('how do i change a column type for %s?' % db)
 
-#     return extract_query_from_migration(migration)
+  return extract_query_from_migration(migration)
 
-#   def add_not_null(db, migrator, table, column_name, field):
-#     cmds = []
-#     if field.default is not None:
-#       cmds += set_default(db, migrator, table, column_name, field)
-#     if is_mysql(db):
-#       ctx = migrator.make_context()
-#       cmds.append(migrator._alter_table(ctx, table).literal(' MODIFY COLUMN ').sql(field.ddl(ctx)).query())
-#     else:
-#       migration = migrator.add_not_null(table, column_name, with_context=True)
-#       cmds += extract_query_from_migration(migration)
-#     return cmds
+def add_not_null(db, migrator, table, column_name, field):
+  cmds = []
+  if field.default is not None:
+    cmds += set_default(db, migrator, table, column_name, field)
+  if is_mysql(db):
+    ctx = migrator.make_context()
+    cmds.append(migrator._alter_table(ctx, table).literal(' MODIFY COLUMN ').sql(field.ddl(ctx)).query())
+  else:
+    migration = migrator.add_not_null(table, column_name, with_context=True)
+    cmds += extract_query_from_migration(migration)
+  return cmds
 
-#   def indexes_on_model(model):
-#     return [
-#       pw.IndexMetadata('', '', [_column_name(f) for f in idx._expressions], idx._unique, _table_name(model))
-#       for idx in model._meta.fields_to_index()
-#     ]
+def indexes_on_model(model):
+  return [
+    pw.IndexMetadata('', '', [_column_name(f) for f in idx._expressions], idx._unique, _table_name(model))
+    for idx in model._meta.fields_to_index()
+  ]
 
 # else:
 def normalize_op_to_clause(migrator, op):
