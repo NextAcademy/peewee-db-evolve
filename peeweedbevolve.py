@@ -2,28 +2,28 @@ from __future__ import print_function
 
 import collections, re, sys, time, traceback
 
-# try:
-#   import colorama
-#   colorama.init()
-# except ImportError:
-#   print('colorama not installed')
+try:
+  import colorama
+  colorama.init()
+except ImportError:
+  print('colorama not installed')
 
-# try:
-#   import peewee as pw
-#   import playhouse.migrate
-# except ImportError:
-#   print('peewee or herman not installed')
-#   # don't error, because setup needs to be able to run this to get the version
+try:
+  import peewee as pw
+  import playhouse.migrate
+except ImportError:
+  print('peewee or herman not installed')
+  # don't error, because setup needs to be able to run this to get the version
 
-# if sys.version_info >= (3,0):
-#   raw_input = input
-#   from collections.abc import Iterable
-# else:
-#   from collections import Iterable
+if sys.version_info >= (3,0):
+  raw_input = input
+  from collections.abc import Iterable
+else:
+  from collections import Iterable
 
 
 
-# DEBUG = False
+DEBUG = False
 # PW3 = not hasattr(pw, 'Clause')
 
 # peewee doesn't do defaults in the database - doh!
